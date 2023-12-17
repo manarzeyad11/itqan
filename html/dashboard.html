@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/all.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+</head>
+
+<body>
+
+    <div class="header">
+        <nav>
+
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+
+            <div class="profile" onclick="menuToggle();">
+                <img src="../img/s2.png" alt="" >
+            </div>
+
+            <div class="action">
+                
+                <div class="menu">
+                    <h3>User</h3>
+                    <ul>
+                        <li>
+                            <i class="fa-solid fa-user"></i>
+                            <a href="#" id="profile-link"> Edit Profile</a>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-envelope"></i>
+                            <a href="#" id="message-link"> Message </a>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-gear"></i>
+                            <a href="#" id="settings-link"> Settings </a>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-circle-info"></i>
+                            <a href="#" id="help-link"> Help </a>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <a href="#" id="logout-link"> Logout </a>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+
+        </nav>
+
+        <div class="dashboard-container">
+            <h2 class="top">Dashboard Menu</h2>
+    
+            <div id="dashboard-info">
+                <!-- Dashboard information will be displayed here -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- <div id="profile-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeProfileModal()">&times;</span>
+            <h2>User Profile</h2>
+            <p id="profile-username"></p>
+        </div>
+    </div> -->
+
+  
+
+
+    <!-- <img class="wave" src="../img/wave.png"> -->
+
+    <script>
+
+        function menuToggle() {
+            const toggleMenu = document.querySelector('.menu');
+            toggleMenu.classList.toggle('active')
+        }
+
+        // // Function to close the profile modal
+        // function closeProfileModal() {
+        //     const modal = document.getElementById("profile-modal");
+        //     modal.style.display = "none";
+        // }
+
+        // Function to log out and redirect to "index.html"
+        function logout() {
+            // Show a confirmation dialog
+            let confirmLogout = confirm("Are you sure you want to log out?");
+            if (confirmLogout) {
+                window.location.href = "index.html";
+            } else {
+                // User canceled, do nothing or stay on the page
+                console.log("Logout canceled.");
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+
+            // Add an event listener to the "Logout" link
+            const logoutLink = document.getElementById("logout-link");
+            if (logoutLink) {
+                logoutLink.addEventListener("click", function (e) {
+                    e.preventDefault(); // Prevent the default link behavior
+                    logout(); // Call the logout function
+                });
+            }
+
+
+
+            // Function to get cookie value by name
+            function getCookie(name) {
+                const cookies = document.cookie.split(';').map(cookie => cookie.trim());
+                for (const cookie of cookies) {
+                    const [cookieName, cookieValue] = cookie.split('=');
+                    if (cookieName === name) {
+                        return cookieValue;
+                    }
+                }
+                return null;
+            }
+
+            // Get user ID from the 'user_id' cookie
+            const userId = getCookie('user_id');
+
+            console.log("User ID from Cookie:", userId);
+
+            if (!userId) {
+                console.error('User ID not found in the cookie.');
+                return;
+            }
+
+            // Fetch data from the API using the user ID
+            const apiUrl = `http://localhost/itqan/task2/php/dashboard.php?userId=${userId}`;
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Dashboard API Response:", data);
+
+                    // Display dashboard information on the page
+                    const dashboardInfo = document.getElementById("dashboard-info");
+
+                    // Create a container for the buttons
+                    const buttonsContainer = document.createElement("div");
+                    buttonsContainer.classList.add("button-container");
+
+                    // Create buttons based on the API response
+                    if (data[0].buttons && data[0].buttons.length > 0) {
+                        data[0].buttons.forEach(buttonInfo => {
+                            const button = document.createElement("button");
+                            button.textContent = buttonInfo.string;
+                            button.style.backgroundColor = buttonInfo.color;
+                            button.style.width = "120px";
+                            button.style.height = "120px";
+                            button.style.border = "none";
+                            button.style.margin = "10px";
+                            button.style.fontSize = "40px";
+                            button.style.marginTop = "30px";
+
+                            // Add hover effect when the mouse enters the button
+                            button.addEventListener("mouseenter", function () {
+                                button.style.backgroundColor = "#ff5733"; // Change background color on hover
+                                // Additional hover styles if needed
+                            });
+
+                            // Remove hover effect when the mouse leaves the button
+                            button.addEventListener("mouseleave", function () {
+                                button.style.backgroundColor = buttonInfo.color; // Restore default background color
+                                // Additional styles if needed
+                            });
+
+                            buttonsContainer.appendChild(button);
+                        });
+                    }
+
+                    // Append the buttons container to the dashboardInfo div
+                    dashboardInfo.appendChild(buttonsContainer);
+
+                    
+                })
+                .catch(error => {
+                    console.error('Error fetching dashboard data:', error);
+                });
+        });
+    </script>
+</body>
+
+</html>

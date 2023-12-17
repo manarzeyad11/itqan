@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../css/signup.css">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a81368914c.js"></script>
+
+    <title>Sign Up</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="left-content">
+            <!-- <form class="signup-form" id="signup-form">
+                <h2 class="title">Welcome</h2>
+                <div class="input-div one sign">
+                    <div class="i">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="div">
+                        <h5>Username</h5>
+                        <input type="text" id="usernameSignUp" name="username" required>
+                    </div>
+                </div>
+                <div class="input-div pass sign">
+                    <div class="i">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div class="div">
+                        <h5>Password</h5>
+                        <input type="password" id="passwordSignUp" name="password" required>
+
+                    </div>
+                </div> -->
+
+                <!-- <button type="button" class="btn" onclick="submitForm()">Sign Up</button>
+
+                <p class="par">
+                    Already have an account? <a href="#" id="login" class="log" onclick="goto()">Login</a>
+                </p>
+            </form> -->
+
+            <p>Thank you for using our website! Please reach out to the supplier to provide your information.</p>
+
+        </div>
+        <div class="right-content">
+            <img src="../img/s1.png">
+
+        </div>
+
+        <img class="wave" src="../img/wave.png">
+    </div>
+
+    <!-- <script type="text/javascript" src="../js/main.js"></script>
+
+
+    <script>
+        function submitForm() {
+            const username = document.getElementById("usernameSignUp").value;
+            const password = document.getElementById("passwordSignUp").value;
+
+            if (username === "" || password === "") {
+                alert("Username and password are required.");
+            } else {
+                const apiUrl = `http://localhost/itqan/task2/php/signup.php?user=${username}&pass=${password}`;
+
+                fetch(apiUrl, { method: "POST" })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("API Response:", data);
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        alert(error.message);
+                    });
+            }
+
+            alert("Sign Up Done!!!");
+        }
+
+
+        function goto() {
+            window.location.href = "index.html";
+        }
+    </script> -->
+</body>
+
+</html>

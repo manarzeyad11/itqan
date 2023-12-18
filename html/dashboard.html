@@ -27,11 +27,11 @@
             </ul>
 
             <div class="profile" onclick="menuToggle();">
-                <img src="../img/s2.png" alt="" >
+                <img src="../img/s2.png" alt="">
             </div>
 
             <div class="action">
-                
+
                 <div class="menu">
                     <h3>User</h3>
                     <ul>
@@ -64,7 +64,7 @@
 
         <div class="dashboard-container">
             <h2 class="top">Dashboard Menu</h2>
-    
+
             <div id="dashboard-info">
                 <!-- Dashboard information will be displayed here -->
             </div>
@@ -80,7 +80,7 @@
         </div>
     </div> -->
 
-  
+
 
 
     <!-- <img class="wave" src="../img/wave.png"> -->
@@ -136,63 +136,71 @@
                 return null;
             }
 
-            // Get user ID from the 'user_id' cookie
-            const userId = getCookie('user_id');
+            // Get token from the 'token' cookie
+            const token = getCookie('token');
 
-            console.log("User ID from Cookie:", userId);
+            console.log("Token from Cookie:", token);
 
-            if (!userId) {
-                console.error('User ID not found in the cookie.');
+            if (!token) {
+                console.error('Token not found in the cookie.');
                 return;
             }
 
-            // Fetch data from the API using the user ID
-            const apiUrl = `http://localhost/itqan/task2/php/dashboard.php?userId=${userId}`;
+            // Fetch data from the API using the token
+            const apiUrl = `http://localhost/itqan/task2/php/dashboard.php?token=${token}`;
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(data => {
                     console.log("Dashboard API Response:", data);
 
-                    // Display dashboard information on the page
-                    const dashboardInfo = document.getElementById("dashboard-info");
+                    // Check token status
+                    const tokenStatus = data.token_status;
 
-                    // Create a container for the buttons
-                    const buttonsContainer = document.createElement("div");
-                    buttonsContainer.classList.add("button-container");
+                    if (tokenStatus !== 'approved') {
+                        alert('You cannot login. Token not approved.');
+                    } else {
 
-                    // Create buttons based on the API response
-                    if (data[0].buttons && data[0].buttons.length > 0) {
-                        data[0].buttons.forEach(buttonInfo => {
-                            const button = document.createElement("button");
-                            button.textContent = buttonInfo.string;
-                            button.style.backgroundColor = buttonInfo.color;
-                            button.style.width = "120px";
-                            button.style.height = "120px";
-                            button.style.border = "none";
-                            button.style.margin = "10px";
-                            button.style.fontSize = "40px";
-                            button.style.marginTop = "30px";
+                        // Display dashboard information on the page
+                        const dashboardInfo = document.getElementById("dashboard-info");
 
-                            // Add hover effect when the mouse enters the button
-                            button.addEventListener("mouseenter", function () {
-                                button.style.backgroundColor = "#ff5733"; // Change background color on hover
-                                // Additional hover styles if needed
+                        // Create a container for the buttons
+                        const buttonsContainer = document.createElement("div");
+                        buttonsContainer.classList.add("button-container");
+
+                        // Create buttons based on the API response
+                        if (data[0].buttons && data[0].buttons.length > 0) {
+                            data[0].buttons.forEach(buttonInfo => {
+                                const button = document.createElement("button");
+                                button.textContent = buttonInfo.string;
+                                button.style.backgroundColor = buttonInfo.color;
+                                button.style.width = "120px";
+                                button.style.height = "120px";
+                                button.style.border = "none";
+                                button.style.margin = "10px";
+                                button.style.fontSize = "40px";
+                                button.style.marginTop = "30px";
+
+                                // Add hover effect when the mouse enters the button
+                                button.addEventListener("mouseenter", function () {
+                                    button.style.backgroundColor = "#ff5733"; // Change background color on hover
+                                    // Additional hover styles if needed
+                                });
+
+                                // Remove hover effect when the mouse leaves the button
+                                button.addEventListener("mouseleave", function () {
+                                    button.style.backgroundColor = buttonInfo.color; // Restore default background color
+                                    // Additional styles if needed
+                                });
+
+                                buttonsContainer.appendChild(button);
                             });
-
-                            // Remove hover effect when the mouse leaves the button
-                            button.addEventListener("mouseleave", function () {
-                                button.style.backgroundColor = buttonInfo.color; // Restore default background color
-                                // Additional styles if needed
-                            });
-
-                            buttonsContainer.appendChild(button);
-                        });
+                        }
                     }
 
                     // Append the buttons container to the dashboardInfo div
                     dashboardInfo.appendChild(buttonsContainer);
 
-                    
+
                 })
                 .catch(error => {
                     console.error('Error fetching dashboard data:', error);

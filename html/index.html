@@ -97,12 +97,12 @@
                         console.log("API Response:", data);
 
                         if (data.login === "Y") {
-                            // Set user_id cookie
-                            setCookie("user_id", data.user_id, 7);
+                            // Set token cookie
+                            setCookie("token", data.token, 7);
 
-                            // Print the user_id cookie in the console
-                            const userIdFromCookie = getCookie("user_id");
-                            console.log("User ID from Cookie:", userIdFromCookie);
+                            // Print the token cookie in the console
+                            const tokenFromCookie = getCookie("token");
+                            console.log("Token from Cookie:", tokenFromCookie);
 
                             console.log("Login successful!");
 

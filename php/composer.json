@@ -1,0 +1,17 @@
+{
+    "name": "manar/task2",
+    "autoload": {
+        "psr-4": {
+            "Manar\\Task2\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "manarzeyad11",
+            "email": "122107121+manarzeyad11@users.noreply.github.com"
+        }
+    ],
+    "require": {
+        "rbdwllr/reallysimplejwt": "^5.0"
+    }
+}

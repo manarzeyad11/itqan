@@ -19,7 +19,7 @@
             <img src="../img/bg.svg">
         </div>
         <div class="login-content">
-            <form action="index.html">
+            <form id="login-form" method="post">
                 <img src="../img/avatar.svg">
                 <h2 class="title">Welcome</h2>
                 <div class="input-div one">
@@ -112,7 +112,7 @@
                                 alert('You cannot login. Token not approved.');
                                 window.location.href = "index.html";
                             } else {
-                                console.log("User in the database and the token is approved. Redirecting to the dashboard.");
+                                console.log("User in the database and the token is approved. Redirecting to the dashboard page.");
                                 window.location.href = "dashboard.html";
                             }
 

@@ -83,7 +83,7 @@
             if (username === "" || password === "") {
                 alert("Username and password are required.");
             } else {
-                const apiUrl = `http://localhost/itqan/task2/php/login.php?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+                const apiUrl = `${baseUrl}login.php?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
 
                 fetch(apiUrl)
                     .then(response => {
@@ -104,9 +104,19 @@
                             const tokenFromCookie = getCookie("token");
                             console.log("Token from Cookie:", tokenFromCookie);
 
-                            console.log("Login successful!");
+                            console.log(data.token_status);
 
-                            window.location.href = "dashboard.html";
+                            // Check the token status
+                            if (data.token_status !== "approved") {
+                                console.log("User in the database but the token is not approved. Redirecting to the login page.");
+                                alert('You cannot login. Token not approved.');
+                                window.location.href = "index.html";
+                            } else {
+                                console.log("User in the database and the token is approved. Redirecting to the dashboard.");
+                                window.location.href = "dashboard.html";
+                            }
+
+
                         } else {
                             console.log("Login failed. Invalid username or password.");
                         }

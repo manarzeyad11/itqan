@@ -5,13 +5,14 @@ header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
+// For token generation library
 require 'vendor/autoload.php';
-
 use ReallySimpleJWT\Token;
 
-$con = mysqli_connect("localhost", "root", "", "signup_db");
+// Include the connection file
+include 'connection.php';
 
-$responce = array();
+$response = array();
 
 if ($con) {
     if (isset($_GET["username"]) && isset($_GET["password"])) {
@@ -25,13 +26,14 @@ if ($con) {
         $password = mysqli_real_escape_string($con, $password);
 
         // Check if there is an existing token for the user
-        $existingTokenSql = "SELECT user_id, token_string FROM user_token WHERE user_id IN (SELECT user_id FROM users WHERE user_name = '$username' AND user_pass = '$password')";
+        $existingTokenSql = "SELECT user_id, token_string, token_status FROM user_token WHERE user_id IN (SELECT user_id FROM users WHERE user_name = '$username' AND user_pass = '$password')";
         $existingTokenResult = mysqli_query($con, $existingTokenSql);
 
         if ($existingTokenResult && $existingTokenRow = mysqli_fetch_assoc($existingTokenResult)) {
             $user_id = $existingTokenRow['user_id'];
             $existingToken = $existingTokenRow['token_string'];
-            echo json_encode(["login" => "Y", "user_id" => $user_id, "token" => $existingToken]);
+            $token_status = $existingTokenRow['token_status'];
+            echo json_encode(["login" => "Y", "user_id" => $user_id, "token" => $existingToken, "token_status" => $token_status]);
         } else {
             // No existing token, generate a new one
             $sql = "SELECT user_id FROM users WHERE user_name = '$username' AND user_pass = '$password'";
@@ -50,7 +52,7 @@ if ($con) {
                 $insertTokenResult = mysqli_query($con, $insertTokenSql);
 
                 if ($insertTokenResult) {
-                    echo json_encode(["login" => "Y", "user_id" => $user_id, "token" => $token]);
+                    echo json_encode(["login" => "Y", "user_id" => $user_id, "token" => $token, "token_status" => $token_status]);
                 } else {
                     echo json_encode(["error" => "Failed to store token"]);
                 }

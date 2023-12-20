@@ -12,7 +12,7 @@ use ReallySimpleJWT\Token;
 // Include the connection file
 include 'connection.php';
 
-$response = array();
+
 
 if ($con) {
     if (isset($_GET["username"]) && isset($_GET["password"])) {
@@ -48,11 +48,11 @@ if ($con) {
                 $token = Token::customPayload($payload, $secret);
 
                 // Insert the token into the user_token table
-                $insertTokenSql = "INSERT INTO user_token (user_id, token_string) VALUES ('$user_id', '$token')";
+                $insertTokenSql = "INSERT INTO user_token (user_id, token_string, token_status) VALUES ('$user_id', '$token', 'not approved')";
                 $insertTokenResult = mysqli_query($con, $insertTokenSql);
 
                 if ($insertTokenResult) {
-                    echo json_encode(["login" => "Y", "user_id" => $user_id, "token" => $token, "token_status" => $token_status]);
+                    echo json_encode(["login" => "Y", "user_id" => $user_id, "token" => $token, "token_status" => "not approved"]);
                 } else {
                     echo json_encode(["error" => "Failed to store token"]);
                 }

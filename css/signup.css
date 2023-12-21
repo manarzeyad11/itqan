@@ -162,6 +162,12 @@ a:hover{
 }
 
 
+.par a{
+    font-size: large;
+    margin-top: 10px;
+}
+
+
 
 @media screen and (max-width: 1050px){
 	.container{

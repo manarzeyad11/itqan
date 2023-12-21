@@ -1,0 +1,107 @@
+
+
+
+<!-- ---------------------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------              ---------------------------------------------- -->
+<!-- ----------------------------------------------------              ---------------------------------------------- -->
+<!-- ----------------------------------------------------              ---------------------------------------------- -->
+<!-- ---------------------------------------------------- NOT COMPLETE ------------------------------------------------->
+<!-- ----------------------------------------------------              ---------------------------------------------- -->
+<!-- ----------------------------------------------------              ---------------------------------------------- -->
+<!-- ----------------------------------------------------              ---------------------------------------------- -->
+<!-- ---------------------------------------------------------------------------------------------------------------- -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="../css/user-profile.css">
+    <link rel="stylesheet" href="../css/all.min.css">
+  </head>
+  <body>
+ 
+    <div class="sidebar">
+      <header>User Profile</header>
+      <ul>
+        <li><a href="#" class="sidebar-link" data-section="edit-profile"><i class="fas fa-qrcode"></i>User Info</a></li>
+        <li><a href="#" class="sidebar-link" data-section="shortcuts"><i class="fa-solid fa-envelope"></i>Message</a></li>
+        <li><a href="#" class="sidebar-link" data-section="overview"><i class="fa-solid fa-gear"></i>Settings</a></li>
+        
+      </ul>
+    </div>
+    <section id="dashboard-section"></section>
+
+    <script>
+      document.querySelectorAll('.sidebar-link').forEach(function(link) {
+        link.addEventListener('click', function() {
+          // Remove the 'active' class from all links
+          document.querySelectorAll('.sidebar-link').forEach(function(link) {
+            link.classList.remove('active');
+          });
+
+          // Add the 'active' class to the clicked link
+          this.classList.add('active');
+
+          // Get the data-section attribute value
+          var sectionId = this.getAttribute('data-section');
+
+          // Load content into the section based on the clicked link
+          loadSectionContent(sectionId);
+        });
+      });
+
+      function loadSectionContent(sectionId) {
+        var section = document.getElementById('dashboard-section');
+        section.innerHTML = '';
+
+        switch(sectionId) {
+          case 'edit-profile':
+            loadEditProfileForm();
+            break;
+          case '':
+            break;
+          case '':
+            break;
+        }
+      }
+
+      function loadEditProfileForm() {
+        var editProfileForm = document.createElement('div');
+        editProfileForm.innerHTML = `
+          <h2>Edit Profile</h2>
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username"><br><br>
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password"><br><br>
+          <button onclick="saveChanges()">Save Changes</button>
+        `;
+        document.getElementById('dashboard-section').appendChild(editProfileForm);
+      }
+
+      function saveChanges() {
+        var username = document.getElementById('username').value;
+        var password = document.getElementById('password').value;
+
+        console.log('Username:', username);
+        console.log('Password:', password);
+      }
+    </script>
+  </body>
+</html>

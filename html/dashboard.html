@@ -24,7 +24,7 @@
                 <li><a href="#">About</a></li>
                 <li><a href="#">Services</a></li>
                 <li><a href="#">Contact</a></li>
-                
+
             </ul>
 
 
@@ -33,14 +33,15 @@
                 <div class="profile" onclick="menuToggle();">
                     <img src="../img/s2.jpg" alt="">
                 </div>
-               
+
 
                 <div class="menu">
-                    <h3>User</h3>
+                    <h3 class="username">User</h3>
                     <ul>
                         <li>
                             <i class="fa-solid fa-user"></i>
-                            <a href="#" id="profile-link"> Edit Profile</a>
+                            <!-- Set the href attribute to the target page -->
+                            <a href="user-profile.html" id="profile-link"> User Profile</a>
                         </li>
                         <li>
                             <i class="fa-solid fa-envelope"></i>
@@ -58,11 +59,11 @@
                             <i class="fa-solid fa-right-from-bracket"></i>
                             <a href="#" id="logout-link"> Logout </a>
                         </li>
-                        
+
 
                     </ul>
 
-                    
+
                 </div>
             </div>
 
@@ -78,21 +79,9 @@
 
     </div>
 
-    <!-- <div id="profile-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeProfileModal()">&times;</span>
-            <h2>User Profile</h2>
-            <p id="profile-username"></p>
-        </div>
-    </div> -->
-
-
-
-
     <!-- <img class="wave" src="../img/wave.png"> -->
 
     <script type="text/javascript" src="../js/main.js"></script>
-
 
     <script>
 
@@ -101,39 +90,33 @@
             toggleMenu.classList.toggle('active')
         }
 
-        // // Function to close the profile modal
-        // function closeProfileModal() {
-        //     const modal = document.getElementById("profile-modal");
-        //     modal.style.display = "none";
-        // }
-
-        // Function to log out and redirect to "index.html"
         function logout() {
-            // Show a confirmation dialog
             let confirmLogout = confirm("Are you sure you want to log out?");
             if (confirmLogout) {
                 window.location.href = "index.html";
             } else {
-                // User canceled, do nothing or stay on the page
                 console.log("Logout canceled.");
             }
         }
 
         document.addEventListener("DOMContentLoaded", function () {
 
-
-            // Add an event listener to the "Logout" link
             const logoutLink = document.getElementById("logout-link");
             if (logoutLink) {
                 logoutLink.addEventListener("click", function (e) {
-                    e.preventDefault(); // Prevent the default link behavior
-                    logout(); // Call the logout function
+                    e.preventDefault();
+                    logout();
                 });
             }
 
+            const userProfileLink = document.getElementById("profile-link");
+            if (userProfileLink) {
+                userProfileLink.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    window.location.href = "user-profile.html";
+                });
+            }
 
-
-            // Function to get cookie value by name
             function getCookie(name) {
                 const cookies = document.cookie.split(';').map(cookie => cookie.trim());
                 for (const cookie of cookies) {
@@ -145,7 +128,6 @@
                 return null;
             }
 
-            // Get token from the 'token' cookie
             const token = getCookie('token');
 
             console.log("Token from Cookie:", token);
@@ -155,7 +137,6 @@
                 return;
             }
 
-            // Fetch data from the API using the token
             const apiUrl = `${baseUrl}dashboard.php?token=${token}`;
             fetch(apiUrl)
                 .then(response => response.json())
@@ -163,14 +144,10 @@
                     if (data && data.buttons) {
                         console.log("Dashboard API Response:", data);
 
-                        // Display dashboard information on the page
                         const dashboardInfo = document.getElementById("dashboard-info");
-
-                        // Create a container for the buttons
                         const buttonsContainer = document.createElement("div");
                         buttonsContainer.classList.add("button-container");
 
-                        // Create buttons based on the API response
                         data.buttons.forEach(buttonInfo => {
                             const button = document.createElement("button");
                             button.textContent = buttonInfo.string;
@@ -182,23 +159,26 @@
                             button.style.fontSize = "40px";
                             button.style.marginTop = "30px";
 
-                            // Add hover effect when the mouse enters the button
                             button.addEventListener("mouseenter", function () {
-                                button.style.backgroundColor = "#ff5733"; // Change background color on hover
+                                button.style.backgroundColor = "#ff5733";
                             });
 
-                            // Remove hover effect when the mouse leaves the button
                             button.addEventListener("mouseleave", function () {
-                                button.style.backgroundColor = buttonInfo.color; // Restore default background color
+                                button.style.backgroundColor = buttonInfo.color;
                             });
 
                             buttonsContainer.appendChild(button);
                         });
 
-                        // Append the buttons container to the dashboardInfo div
+                        if (data.user_name) {
+                            var h3Element = document.querySelector('.username');
+                            h3Element.innerHTML = "Hello " + data.user_name + " :)";
+                        }
+
                         dashboardInfo.appendChild(buttonsContainer);
                     } else if (data && data.error) {
                         console.error('Error fetching dashboard data:', data.error);
+                        alert('No dashboard data in the database');
                     } else {
                         console.error('Unexpected response format:', data);
                     }

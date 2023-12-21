@@ -119,6 +119,8 @@
 
                         } else {
                             console.log("Login failed. Invalid username or password.");
+                            alert('Login failed. Invalid username or password.');
+                            window.location.href = "index.html";
                         }
                     })
                     .catch(error => {

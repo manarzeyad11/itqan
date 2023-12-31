@@ -1,0 +1,166 @@
+<!-- ----------------------------------------------------------------------------------------------------------------- -->
+<!-- ----------------------------------------------------               ---------------------------------------------- -->
+<!-- ----------------------------------------------------               ---------------------------------------------- -->
+<!-- ----------------------------------------------------               ---------------------------------------------- -->
+<!-- ---------------------------------------------------- 70% COMPLETED ------------------------------------------------->
+<!-- ----------------------------------------------------               ---------------------------------------------- -->
+<!-- ----------------------------------------------------               ---------------------------------------------- -->
+<!-- ----------------------------------------------------               ---------------------------------------------- -->
+<!-- ----------------------------------------------------------------------------------------------------------------- -->
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>User Profile</title>
+  <link rel="stylesheet" href="../assets/css/user-profile.css">
+  <link rel="stylesheet" href="../assets/css/all.min.css">
+</head>
+
+<body>
+
+  <div class="sidebar">
+    <header>User Profile</header>
+    <ul>
+      <li><a href="#" class="sidebar-link" data-section="edit-profile"><i class="fas fa-qrcode"></i>User Info</a></li>
+      <li><a href="#" class="sidebar-link" data-section="help"><i class="fa-solid fa-circle-info"></i>Help</a></li>
+      <li><a href="#" class="sidebar-link" data-section="settings"><i class="fa-solid fa-gear"></i>Settings</a></li>
+    </ul>
+  </div>
+  <section id="edit-profile-section"></section>
+
+  <script>
+    document.querySelectorAll('.sidebar-link').forEach(function (link) {
+      link.addEventListener('click', function () {
+        // Remove the 'active' class from all links
+        document.querySelectorAll('.sidebar-link').forEach(function (link) {
+          link.classList.remove('active');
+        });
+
+        // Add the 'active' class to the clicked link
+        this.classList.add('active');
+
+        // Get the data-section attribute value
+        var sectionId = this.getAttribute('data-section');
+
+        // Load content into the section based on the clicked link
+        loadSectionContent(sectionId);
+      });
+    });
+
+
+    function loadSectionContent(sectionId) {
+      var section = document.getElementById('edit-profile-section');
+      section.innerHTML = '';
+
+      switch (sectionId) {
+        case 'edit-profile':
+          loadEditProfileForm();
+          break;
+        case 'help':
+          loadHelpContent();
+          break;
+        case 'settings':
+          loadSettingsForm();
+          break;
+      }
+    }
+
+    function loadEditProfileForm() {
+      var editProfileForm = document.createElement('div');
+      editProfileForm.innerHTML = `
+          <h2>Edit Profile</h2>
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username"><br><br>
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password"><br><br>
+          <button onclick="saveChanges()">Save Changes</button>
+        `;
+      document.getElementById('edit-profile-section').appendChild(editProfileForm);
+    }
+
+    function saveChanges() {
+      var username = document.getElementById('username').value;
+      var password = document.getElementById('password').value;
+
+      console.log('Username:', username);
+      console.log('Password:', password);
+
+      /// not complete 
+    }
+
+
+    function loadHelpContent() {
+      var helpSection = document.getElementById('edit-profile-section');
+      helpSection.innerHTML = '';
+
+      var commonQuestions = [
+        { question: 'How do I reset my password?', answer: 'To reset your password, go to the login page and click on the "Forgot Password" link.' },
+        { question: 'Can I change my username?', answer: 'Yes, you can change your username in the "Edit Profile" section.' },
+        { question: 'How to contact customer support?', answer: 'You can reach our customer support team by sending an email to support@example.com.' },
+      ];
+
+      var faqContainer = document.createElement('div');
+      faqContainer.classList.add('faq-container');
+
+      commonQuestions.forEach(function (item, index) {
+        var faqItem = document.createElement('div');
+        faqItem.classList.add('faq-item');
+
+        var questionElement = document.createElement('h3');
+        questionElement.textContent = item.question;
+
+        var answerElement = document.createElement('p');
+        answerElement.textContent = item.answer;
+
+        faqItem.appendChild(questionElement);
+        faqItem.appendChild(answerElement);
+
+        faqContainer.appendChild(faqItem);
+      });
+
+      helpSection.appendChild(faqContainer);
+    }
+
+
+    function loadSettingsForm() {
+      var settingsForm = document.createElement('div');
+      settingsForm.innerHTML = `
+    <h2>User Settings</h2>
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" placeholder="Enter your email"><br><br>
+    <label for="timezone">Timezone:</label>
+    <select id="timezone" name="timezone">
+      <option value="utc">UTC</option>
+      <option value="est">EST</option>
+      <option value="pst">PST</option>
+      <!-- Add more timezone options as needed -->
+    </select><br><br>
+    <label for="notification">Receive Notifications:</label>
+    <input type="checkbox" id="notification" name="notification" checked><br><br>
+    <button onclick="saveSettings()">Save Settings</button>
+  `;
+      document.getElementById('edit-profile-section').appendChild(settingsForm);
+    }
+
+    function saveSettings() {
+      var email = document.getElementById('email').value;
+      var timezone = document.getElementById('timezone').value;
+      var receiveNotifications = document.getElementById('notification').checked;
+
+      console.log('Email:', email);
+      console.log('Timezone:', timezone);
+      console.log('Receive Notifications:', receiveNotifications);
+
+      /// not complete 
+    }
+
+  </script>
+</body>
+
+</html>

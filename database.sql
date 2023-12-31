@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 19, 2023 at 06:30 PM
+-- Generation Time: Dec 31, 2023 at 10:38 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -42,7 +42,8 @@ INSERT INTO `user_token` (`token_id`, `user_id`, `token_string`, `token_status`)
 (1, 1, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIxIiwidGltZSI6MTcwMjkxNDI2OH0.Qzx0ekhnIMNk6NOeHMTRDd2aSjfyumgsIuaAkMNGeZI', 'approved'),
 (2, 23, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNhamEiLCJ0aW1lIjoxNzAyOTE0Mjk4fQ.juTxNUcJZUBrKVRf8mkxRDvAQ78r-kQt210k-IibqP4', 'not approved'),
 (7, 37, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMzciLCJ1c2VybmFtZSI6ImRhbmEiLCJ0aW1lIjoxNzAzMDA0NDI2fQ.E5dMfBrhbDBBED7F6UGsZ81dBBSzKasRPzlnHsSvRmg', 'approved'),
-(8, 39, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMzkiLCJ1c2VybmFtZSI6InNlZWwiLCJ0aW1lIjoxNzAzMDA2NzE3fQ.mFP5VKfjdGkI7h-K3QYrmqFN9QbZJJAdcyQ-3ClOfkI', 'not approved');
+(18, 38, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMzgiLCJ1c2VybmFtZSI6Im5vb3IiLCJ0aW1lIjoxNzAzMDYyNzU2fQ.aiW-23spbLIJgdqY1x1k158IPD-HY4zutbfg8ErIl8Q', 'approved'),
+(21, 39, 'g7auk673013qbdcnp79hp3lm6i', 'approved');
 
 --
 -- Indexes for dumped tables
@@ -63,7 +64,7 @@ ALTER TABLE `user_token`
 -- AUTO_INCREMENT for table `user_token`
 --
 ALTER TABLE `user_token`
-  MODIFY `token_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `token_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- Constraints for dumped tables

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="../assets/css/login.css">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a81368914c.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+</head>
+
+<body>
+    <img class="wave" src="../assets/images/wave.png">
+    <div class="container">
+        <div class="img">
+            <img src="../assets/images/bg.svg">
+        </div>
+        <div class="login-content">
+            <form id="login-form" method="post">
+                <img src="../assets/images/avatar.svg">
+                <h2 class="title">Welcome</h2>
+                <div class="input-div one">
+                    <div class="i">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="div">
+                        <h5>Username</h5>
+                        <input type="text" class="input" id="usernamelogin" name="username" required>
+                    </div>
+                </div>
+                <div class="input-div pass">
+                    <div class="i">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div class="div">
+                        <h5>Password</h5>
+                        <input type="password" class="input" id="passwordlogin" name="password" required>
+
+                    </div>
+                </div>
+                <a href="#">Forgot Password?</a>
+                <button type="button" class="btn" onclick="submitForm()">Login</button>
+
+                <p class="par">
+                    <a href="#" id="signup" class="sign" onclick="goto()"> Don't have an account? </a>
+                </p>
+            </form>
+
+        </div>
+
+
+    </div>
+
+    <script type="text/javascript" src="../js/main.js"></script>
+    <script>
+        function setCookie(name, value, days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        }
+
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        function submitForm() {
+            const form = document.getElementById("login-form");
+            const usernameLoginInput = document.getElementById("usernamelogin");
+            const passwordLoginInput = document.getElementById("passwordlogin");
+
+            const username = usernameLoginInput.value;
+            const password = passwordLoginInput.value;
+
+            if (username === "" || password === "") {
+                alert("Username and password are required.");
+            } else {
+                const apiUrl = `${baseUrl}login.php?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+
+                fetch(apiUrl)
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            throw new Error("Login failed. Please check your username and password.");
+                        }
+                    })
+                    .then(data => {
+                        console.log("API Response:", data);
+
+                        if (data.login === "Y") {
+                            // Set token cookie
+                            setCookie("token", data.token, 7);
+
+                            // Print the token cookie in the console
+                            const tokenFromCookie = getCookie("token");
+                            console.log("Token from Cookie:", tokenFromCookie);
+
+                            console.log("Token Status", data.token_status);
+
+                            // Check the token status
+                            if (data.token_status !== "approved") {
+                                console.log("User in the database but the token is not approved. Redirecting to the login page.");
+                                alert('You cannot login. Token not approved or NULL.');
+                                window.location.href = "index.html";
+                            } else {
+                                console.log("User in the database and the token is approved. Redirecting to the dashboard page.");
+                                window.location.href = "dashboard.html";
+                            }
+
+
+                        } else {
+                            console.log("Login failed. Invalid username or password.");
+                            alert('Login failed. Invalid username or password.');
+                            window.location.href = "index.html";
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        alert(error.message);
+                    });
+            }
+        }
+
+        function goto() {
+            window.location.href = "signup.html";
+        }
+    </script>
+</body>
+
+</html>

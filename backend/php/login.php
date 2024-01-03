@@ -34,7 +34,7 @@ if ($local_con) {
             if ($token_status == 'approved') {
                 echo json_encode(["login" => "Y", "user_id" => $user_id, "token" => $existingToken, "token_status" => $token_status]);
             } else {
-                echo json_encode(["login" => "Y", "user_id" => $user_id, "token" => $existingToken, "token_status" => $token_status, "message" => "Waiting for admin approval"]);
+                echo json_encode(["login" => "Y", "user_id" => $user_id, "token" => $existingToken, "token_status" => $token_status]);
             }
         } else {
             // No existing token, generate a new one
@@ -45,14 +45,14 @@ if ($local_con) {
                 $user_id = $row['user_id'];
 
                 $token = session_id();
-                echo (['Token from session_id' => $token]);
+                // echo json_encode(['Token from session_id' => $token]);
 
                 // Insert the token into the user_token table with token_status as "not approved"
-                $insertTokenSql = "INSERT INTO user_token (user_id, token_string, token_status) VALUES ('$user_id', '$token', 'not approved')";
+                $insertTokenSql = "INSERT INTO user_token (user_id, token_string, token_status) VALUES ('$user_id', '$token', 'NA')";
                 $insertTokenResult = mysqli_query($local_con, $insertTokenSql);
 
                 if ($insertTokenResult) {
-                    echo json_encode(["login" => "Y", "user_id" => $user_id, "token" => $token, "token_status" => "not approved"]);
+                    echo json_encode(["login" => "Y", "user_id" => $user_id, "token" => $token, "token_status" => "NA"]);
                 } else {
                     echo json_encode(["error" => "Failed to store token"]);
                 }

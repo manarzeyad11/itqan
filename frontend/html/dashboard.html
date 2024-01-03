@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link rel="stylesheet" href="../assets/css/dashboard.css?v=1.1">
     <link rel="stylesheet" href="../assets/css/all.min.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -50,8 +50,11 @@
         <div class="dashboard-container">
             <h2 class="top">Dashboard Menu</h2>
 
-            <div class="page-container" id="pageContainer">
-                <!-- Pages will be dynamically added here -->
+            <div class="pageContainer">
+                <button>1</button>
+                <button>2</button>
+                <button>3</button>
+                <button>4</button>
             </div>
 
             <div id="dashboard-info">
@@ -63,131 +66,49 @@
     <script type="text/javascript" src="../js/main.js"></script>
 
     <script>
+        // Function to toggle the menu
         function menuToggle() {
             const toggleMenu = document.querySelector('.menu');
-            toggleMenu.classList.toggle('active')
+            toggleMenu.classList.toggle('active');
         }
 
+        // Function to handle logout
         function logout() {
             let confirmLogout = confirm("Are you sure you want to log out?");
             if (confirmLogout) {
-                window.location.href = "index.html";
+                const apiUrlLogout = `${baseUrl}logout.php?token=${token}`;
+
+                fetch(apiUrlLogout)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        // window.location.href = "index.html";
+                    })
+                    .catch(error => {
+                        console.error('Error during logout:', error);
+                    });
+
             } else {
                 console.log("Logout canceled.");
             }
         }
 
-        document.addEventListener("DOMContentLoaded", function () {
-            const logoutLink = document.getElementById("logout-link");
-            if (logoutLink) {
-                logoutLink.addEventListener("click", function (e) {
-                    e.preventDefault();
-                    logout();
-                });
-            }
+        // Variable to store the token
+        let token;
 
-            const userProfileLink = document.getElementById("profile-link");
-            if (userProfileLink) {
-                userProfileLink.addEventListener("click", function (e) {
-                    e.preventDefault();
-                    window.location.href = "user-profile.html";
-                });
-            }
-
-            function getCookie(name) {
-                const cookies = document.cookie.split(';').map(cookie => cookie.trim());
-                for (const cookie of cookies) {
-                    const [cookieName, cookieValue] = cookie.split('=');
-                    if (cookieName === name) {
-                        return cookieValue;
-                    }
+        // Function to get cookie value by name
+        function getCookie(name) {
+            const cookies = document.cookie.split(';').map(cookie => cookie.trim());
+            for (const cookie of cookies) {
+                const [cookieName, cookieValue] = cookie.split('=');
+                if (cookieName === name) {
+                    return cookieValue;
                 }
-                return null;
             }
+            return null;
+        }
 
-            const token = getCookie('token');
-
-            console.log("Token from Cookie:", token);
-
-            if (!token) {
-                console.error('Token not found in the cookie.');
-                return;
-            }
-
-            const apiUrl = `${baseUrl}dashboard.php?token=${token}`;
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(data => {
-                    if (data && data.styling_data) {
-                        console.log("Dashboard API Response:", data);
-
-                        const dashboardInfo = document.getElementById("dashboard-info");
-                        const buttonsContainer = document.createElement("div");
-                        buttonsContainer.classList.add("button-container");
-
-                        data.styling_data.forEach(buttonInfo => {
-                            const button = document.createElement("button");
-
-                            button.textContent = buttonInfo.stylestring;
-                            button.style.backgroundColor = buttonInfo.color;
-                            button.style.width = getSizeValue(buttonInfo.size);
-                            button.style.height = getSizeValue(buttonInfo.size);
-                            button.style.border = "none";
-                            button.style.margin = "10px";
-                            button.style.fontSize = "15px";
-                            button.style.fontWeight = "bold";
-
-                            button.addEventListener("mouseenter", function () {
-                                button.style.backgroundColor = "#ff5733";
-                                console.log(buttonInfo.stylestring);
-                            });
-
-                            button.addEventListener("mouseleave", function () {
-                                button.style.backgroundColor = buttonInfo.color;
-                            });
-
-                            buttonsContainer.appendChild(button);
-
-                            button.addEventListener("click", function () {
-                                if (buttonInfo.stylestring === 'فاتورة بيع') {
-                                    console.log("Redirecting to user-profile.html");
-                                    // window.location.href = "user-profile.html";
-                                } else {
-                                }
-                            });
-                        });
-
-                        if (data.user_name) {
-                            var h3Element = document.querySelector('.username');
-                            h3Element.innerHTML = "Hello " + data.user_name + " :)";
-                        }
-
-                        dashboardInfo.appendChild(buttonsContainer);
-
-                        setupGrid(data.styling_data.length, buttonsContainer);
-                    } else if (data && data.error) {
-                        console.error('Error fetching dashboard data:', data.error);
-                        alert('No dashboard data in the database');
-                    } else {
-                        console.error('Unexpected response format:', data);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching dashboard data:', error);
-                });
-
-                const staticPages = ['Page 1', 'Page 2', 'Page 3', 'Page 4'];
-
-
-            // Dynamic creation of page elements based on the API response
-            const pageContainer = document.getElementById('pageContainer');
-            data.page.forEach((pageName) => {
-                const pageElement = document.createElement('h2');
-                pageElement.textContent = pageName;
-                pageContainer.appendChild(pageElement);
-            });
-        });
-
+        // Function to get size value based on size string
         function getSizeValue(size) {
             switch (size.toLowerCase()) {
                 case 's':
@@ -201,6 +122,7 @@
             }
         }
 
+        // Function to set up grid layout based on screen width
         function setupGrid(columns, container) {
             const screenWidth = window.innerWidth;
             if (screenWidth <= 900) {
@@ -209,6 +131,129 @@
                 container.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
             }
         }
+
+        // Function to fetch dashboard data and update UI
+        function fetchDashboardData(page) {
+            // Retrieve the token value from the cookie
+            token = getCookie('token');
+
+            console.log("Token from Cookie:", token);
+
+            // Check if the token is available
+            if (!token) {
+                console.error('Token not found in the cookie.');
+                return;
+            }
+
+            // API URL for dashboard data
+            const apiUrl = `${baseUrl}dashboard.php?token=${token}`;
+            // Fetch dashboard data
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.styling_data) {
+                        console.log("Dashboard API Response:", data);
+
+                        // Get dashboard info container
+                        const dashboardInfo = document.getElementById("dashboard-info");
+                        // Create a container for buttons
+                        const buttonsContainer = document.createElement("div");
+                        buttonsContainer.classList.add("button-container");
+
+                        // Filter styling data based on the selected page
+                        const filteredData = data.styling_data.filter(buttonInfo => buttonInfo.page === page.toString());
+
+                        // Iterate through filtered styling data and create buttons
+                        filteredData.forEach(buttonInfo => {
+                            const button = document.createElement("button");
+
+                            button.textContent = buttonInfo.stylestring;
+                            button.style.backgroundColor = buttonInfo.color;
+                            button.style.width = getSizeValue(buttonInfo.size);
+                            button.style.height = getSizeValue(buttonInfo.size);
+                            button.style.border = "none";
+                            button.style.margin = "10px";
+                            button.style.fontSize = "15px";
+                            button.style.fontWeight = "bold";
+
+                            // Add mouseleave event to reset button color
+                            button.addEventListener("mouseleave", function () {
+                                button.style.backgroundColor = buttonInfo.color;
+                            });
+
+                            // Add button to container
+                            buttonsContainer.appendChild(button);
+
+                            // Add click event to buttons
+                            button.addEventListener("click", function () {
+                                if (buttonInfo.stylestring === 'فاتورة بيع') {
+                                    console.log("Redirecting to invoice.html");
+                                     window.location.href = "invoice.html";
+                                } else {
+                                    // Handle other button clicks
+                                }
+                            });
+                        });
+
+                        // Display user name in the header
+                        if (data.user_name) {
+                            var h3Element = document.querySelector('.username');
+                            h3Element.innerHTML = "Hello " + data.user_name + " :)";
+                        }
+
+                        // Add buttons container to dashboard info
+                        dashboardInfo.innerHTML = ""; // Clear previous data
+                        dashboardInfo.appendChild(buttonsContainer);
+
+                        // Set up grid based on the number of buttons
+                        setupGrid(filteredData.length, buttonsContainer);
+                    } else if (data && data.error) {
+                        console.error('Error fetching dashboard data:', data.error);
+                        alert('No dashboard data in the database');
+                    } else {
+                        console.error('Unexpected response format:', data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching dashboard data:', error);
+                });
+        }
+
+
+        // Event listener when the DOM is fully loaded
+        document.addEventListener("DOMContentLoaded", function () {
+            // Add click event for logout link
+            const logoutLink = document.getElementById("logout-link");
+            if (logoutLink) {
+                logoutLink.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    logout();
+                });
+            }
+
+            // Add click event for user profile link
+            const userProfileLink = document.getElementById("profile-link");
+            if (userProfileLink) {
+                userProfileLink.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    window.location.href = "user-profile.html";
+                });
+            }
+
+            // Fetch and display dashboard data for the initial page (page 0 at the data base)
+            const initialPage = 0;
+            fetchDashboardData(initialPage);
+
+            const pageButtons = document.querySelectorAll(".pageContainer button");
+
+            pageButtons.forEach((button, index) => {
+                button.addEventListener("click", function () {
+                    const pageIndex = index + 1;
+                    console.log("Page index from the button:", pageIndex);
+                    fetchDashboardData(pageIndex - 1);
+                });
+            });
+        });
     </script>
 </body>
 

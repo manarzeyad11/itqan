@@ -157,3 +157,26 @@ nav ul li a:hover {
 }
 
 
+.pageContainer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -50px;
+    margin-bottom: 35px;
+}
+
+
+
+.pageContainer button {
+    padding: 10px;
+    color: #000000;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border: 1px solid #222; 
+    width: 50px;
+    height: 40px;
+}
+
+.pageContainer button:hover{
+    background-color: #e7e6e6;
+}

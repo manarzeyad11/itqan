@@ -9,18 +9,18 @@ header("Content-Type: application/json");
 include '../connection.php';
 
 // Check if the required parameter is provided
-if (isset($_GET["customername"])) {
-    // Get the customer name from the query parameters
-    $customerName = $_GET["customername"];
+if (isset($_GET["itemname"])) {
+    // Get the item name from the query parameters
+    $itemname = $_GET["itemname"];
 
-    // echo ($customerName);
+    echo ($itemname);
 
     // To prevent from SQL injection
-    $customerName = stripcslashes($customerName);
-    $customerName = mysqli_real_escape_string($itqan_con, $customerName);
+    $itemname = stripcslashes($itemname);
+    $itemname = mysqli_real_escape_string($itqan_con, $itemname);
 
-    // SQL query to search for the customer in the accounts table
-    $sql = "SELECT accountstring FROM accounts WHERE accountstring LIKE '%$customerName%'";
+    // SQL query to search for the customer in the items table
+    $sql = "SELECT itemstring FROM items WHERE itemstring LIKE '%$itemname%'";
     
     $result = mysqli_query($itqan_con, $sql);
 

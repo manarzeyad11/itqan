@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         // Display the table
         displayTable();
 
-        const apiUrlLocal = `${baseUrl}invocelocal.php`;
+        const apiUrlLocal = `${baseUrl}invoicelocal.php`;
 
         // Fetch data from the local API
         const response = await fetch(apiUrlLocal);
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         // Store the accounts in an array for local searching
         const localAccounts = Array.isArray(data) ? data.map(item => item.accountstring) : [];
 
-        console.log(localAccounts);
+        // console.log(localAccounts);
 
 
         // Function to display search results as a dropdown
@@ -60,18 +60,15 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         // Function to handle search input and fetch results
         async function handleSearchInput() {
-            // Check the selected search method
-            const searchMethod = document.getElementById("searchMethod").value;
 
-            // Implement logic based on the selected method and
-            // Only fetch results if there is at least one character in the search input
+            console.log("Search method:", searchMethod);
 
             if (searchMethod === "server" && searchInput.value.length > 0) {
                 // Show loading spinner
                 loadingSpinner.style.display = "block";
 
                 const encodedSearchInput = encodeURIComponent(searchInput.value);
-                const apiUrlServer = `${baseUrl}invoce.php?customername=${encodedSearchInput}`;
+                const apiUrlServer = `${baseUrl}invoice.php?customername=${encodedSearchInput}`;
 
                 try {
                     const response = await fetch(apiUrlServer);
@@ -153,10 +150,24 @@ document.addEventListener("DOMContentLoaded", async function () {
 
                     input.type = "text";
                     input.value = "";
-
-                    // Add unique id or name attributes to each input field
-                    input.id = headers[i].toLowerCase();
+                    input.id = headers[i].toLowerCase() + rowNumber; // Add row number to make ids unique
                     input.name = headers[i].toLowerCase();
+
+                    // Add an event listener for the "Item" fields
+                    if (headers[i] === "Item") {
+                        // input.addEventListener("input", function () {
+                        //     searchItem(input);
+                        // });
+
+                        // Add a search box for each "Item" field
+                        const searchBox = document.createElement("div");
+                        searchBox.classList.add("search-box");
+                        searchBox.appendChild(input);
+                        dataRow.appendChild(searchBox);
+                    } else {
+                        // For other columns, simply add the input field to the cell
+                        cell.appendChild(input);
+                    }
 
                     // Add an event listener for the "Quantity" and "Price" fields
                     if (headers[i] === "Quantity" || headers[i] === "Price") {
@@ -170,12 +181,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                         input.disabled = true;
                         input.name = "totalPrice";
                     }
-
-                    cell.appendChild(input);
                 }
             }
-
-
 
             // Clear previous tables
             tableContainer.innerHTML = "";
@@ -188,6 +195,58 @@ document.addEventListener("DOMContentLoaded", async function () {
             addRowBtn.style.display = "block";
             totalSumOutput.style.display = "block";
         }
+
+
+        async function searchItem(itemInput) {
+
+            const resultsDropdown = document.createElement("ul");
+            resultsDropdown.classList.add("search-dropdown");
+
+            console.log("Search value:", itemInput.value);
+
+            console.log("Item search method:", itemsearchMethod);
+
+            if (itemsearchMethod === "server" && itemInput.value.length > 0) {
+
+                const encodedItemInput = encodeURIComponent(itemInput.value);
+                const apiUrlServer = `${baseUrl}item.php?itemname=${encodedItemInput}`;
+
+                try {
+                    const response = await fetch(apiUrlServer);
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+
+                    const data = await response.text();
+                    const jsonStartIndex = data.indexOf('[');
+                    const jsonString = data.slice(jsonStartIndex);
+                    const jsonData = JSON.parse(jsonString);
+
+                    displaySearchResults(jsonData);
+                } catch (error) {
+                    console.error("An error occurred during server request:", error);
+                    // Display an error message to the user
+                    searchResults.innerHTML = "<li>Error fetching data from the server</li>";
+                }
+
+            } else if (itemsearchMethod === "local" && itemInput.value.length > 0) {
+
+
+                // const localItemResults = localItems.filter(account => account.includes(itemInput.value));
+                // console.log(localItemResults);
+
+                // displaySearchResults(localItemResults);
+
+
+            } else {
+                // Clear search results if the search input is empty or no method is selected
+                searchResults.innerHTML = "";
+
+            }
+
+        }
+
 
         // Function to update the "Total Price" based on "Price" and "Quantity"
         function updateTotalPrice(table) {
@@ -235,7 +294,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
                     input.type = "text";
                     input.value = "";
-                    input.id = headers[i].toLowerCase();
+                    input.id = headers[i].toLowerCase() + table.rows.length; // Add row number to make ids unique
                     input.name = headers[i].toLowerCase();
 
                     // Add an event listener for the "Quantity" and "Price" fields
@@ -251,7 +310,20 @@ document.addEventListener("DOMContentLoaded", async function () {
                         input.name = "totalPrice";
                     }
 
-                    cell.appendChild(input);
+                    // For the "Item" column, add the search box
+                    if (headers[i] === "Item") {
+                        // input.addEventListener("input", function () {
+                        //     searchItem(input);
+                        // });
+
+                        const searchBox = document.createElement("div");
+                        searchBox.classList.add("search-box");
+                        searchBox.appendChild(input);
+                        cell.appendChild(searchBox);
+                    } else {
+                        // For other columns, simply add the input field to the cell
+                        cell.appendChild(input);
+                    }
                 }
 
                 // Calculate total price for the new row

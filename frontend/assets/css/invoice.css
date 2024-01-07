@@ -60,7 +60,7 @@ h3 {
 
 #searchResults li {
     padding: 10px;
-    border-bottom: 1px solid #ddd;
+    /* border-bottom: 1px solid #ddd; */
     margin-bottom: 5px;
     cursor: pointer;
 }

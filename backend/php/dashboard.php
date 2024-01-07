@@ -18,7 +18,7 @@ $response = array();
 // Get token from the URL parameter
 $token = isset($_GET['token']) ? $_GET['token'] : null;
 
-$sql_token = "SELECT user_id FROM user_token WHERE token_string = '$token'";
+$sql_token = "SELECT user_id,token_status FROM user_token WHERE token_string = '$token'";
 $result_token = mysqli_query($local_con, $sql_token);
 
 if ($result_token) {
@@ -28,6 +28,7 @@ if ($result_token) {
     if (isset($row_token['user_id'])) {
         // Decode the JSON data
         $user_id = $row_token['user_id'];
+        $token_status = $row_token['token_status'];
 
         $sql = "SELECT license_id FROM user_license WHERE user_id = '$user_id'";
         $result = mysqli_query($local_con, $sql);
@@ -119,6 +120,7 @@ echo json_encode([
     "user_name" => $user_name,
     "license_id" => $license_id,
     "user_type_id" => $user_type_id,
+    "token_status" => $token_status,
     "styling_data" => $styling_data,
 ] + $response);
 

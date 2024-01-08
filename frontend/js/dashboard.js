@@ -45,11 +45,11 @@ function getCookie(name) {
 function getSizeValue(size) {
     switch (size.toLowerCase()) {
         case 's':
-            return '120px';
+            return '100px';
         case 'm':
-            return '180px';
-        case 'l':
             return '200px';
+        case 'l':
+            return '280px';
         default:
             return '180px';
     }
@@ -103,18 +103,16 @@ function handleDashboardData(data) {
             console.log("Dashboard Data Array:", dashboardData);
             console.log("User name:", user_name);
 
-            
-
             // Display user name in the header
             displayUserName(user_name);
 
             // Process dashboard data for the initial page
             processDashboardData(0);
         } else if (data.token_status == "NA") {
-            console.log('Error: Your token is Not Approved', data.token_status);
+            console.log('Error: Your token is Not Approved:', data.token_status);
             alert('Your token is Not Approved');
         } else {
-            console.log('Error: Your token is Not Defined', data.token_status);
+            console.log('Error: Your token is Not Defined:', data.token_status);
             alert('Your token is Not Defined');
         }
     } else if (data && data.error) {
@@ -143,15 +141,26 @@ function processDashboardData(page) {
     const buttonsContainer = document.createElement("div");
     buttonsContainer.classList.add("button-container");
 
+
     // Filter styling data based on the selected page
     const filteredData = dashboardData.filter(buttonInfo => buttonInfo.page === page.toString());
 
-    // Sort the dashboardData array based on x and y values
-    filteredData.sort((a, b) => a.x - b.x || a.y - b.y);
-
-
-
     console.log(filteredData);
+
+    // Case 2
+    const customComparator = (a, b) => {
+        if (a.y !== b.y) {
+            return parseInt(a.y) - parseInt(b.y);
+        } else {
+            return parseInt(a.x) - parseInt(b.x);
+        }
+    };
+
+    // Sort the array using the custom comparator function
+    const sortedArray = filteredData.sort(customComparator);
+
+    console.log(sortedArray);
+
 
     // Iterate through filtered styling data and create buttons
     filteredData.forEach(buttonInfo => {
@@ -160,11 +169,17 @@ function processDashboardData(page) {
         button.textContent = buttonInfo.stylestring;
         button.style.backgroundColor = buttonInfo.color;
         button.style.width = getSizeValue(buttonInfo.size);
-        button.style.height = getSizeValue(buttonInfo.size);
+        button.style.height = "100px";
         button.style.border = "none";
         button.style.margin = "10px";
         button.style.fontSize = "15px";
         button.style.fontWeight = "bold";
+
+        // Case 1
+        // button.style.marginTop = "80px";
+        // button.style.position = "absolute";
+        // button.style.left = (buttonInfo.x)*100 + "px";
+        // button.style.top = (buttonInfo.y)*100 + "px";
 
 
         // Add mouseleave event to reset button color

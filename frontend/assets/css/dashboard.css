@@ -51,8 +51,8 @@ nav ul li a:hover {
 
 .profile {
     position: relative;
-    width: 50px; /* Adjust the width as needed */
-    height: 50px; /* Adjust the height as needed */
+    width: 50px; 
+    height: 50px; 
     border-radius: 50%;
     overflow: hidden;
     cursor: pointer;
@@ -70,7 +70,7 @@ nav ul li a:hover {
 }
 
 .action {
-    position: fixed;
+    /* margin-right: 100px; */
     top: 20px;
     right: 30px;
 }
@@ -80,7 +80,7 @@ nav ul li a:hover {
 .action .menu {
     position: absolute;
     top: 120px;
-    right: -10px;
+    right: 97px;
     padding: 10px 20px;
     background: #fff;
     width: 208px;

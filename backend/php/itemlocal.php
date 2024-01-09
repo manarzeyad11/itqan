@@ -8,7 +8,7 @@ header("Content-Type: application/json");
 // Include the connection file
 include '../connection.php';
 
-// SQL query to get all itemstring values from the accounts table
+// SQL query to get all itemstring values from the items table
 $sql = "SELECT itemstring FROM items";
 
 $result = mysqli_query($itqan_con, $sql);

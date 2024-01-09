@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sell Invoice</title>
+    <link rel="stylesheet" href="../assets/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/sellinvoice.css">
+</head>
+
+<body>
+
+    <div class="container">
+        
+        <label for="searchInput">Account Name: </label>
+        <div class="containeri">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search...">
+                <ul id="searchResults" class="search-results-container"></ul>
+            </div>
+            <div class="loading" id="loadingSpinner">Loading...</div>
+        </div>
+
+        <!-- Currency Options Box -->
+        <div class="currency-container">
+            <label for="currencySelect">Select Currency: </label>
+            <select id="currencySelect">
+                <option value="NIS">NIS</option>
+                <option value="JOD">JOD</option>
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Table Structure -->
+    <div id="tableContainer">
+        <table id="invoiceTable" class="responsive-table">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="search" id="item1" name="item" class="item-search" />
+                        <ul class="item-search-results" id="itemResults1"></ul>
+                    </td>
+                    <td><input type="text" id="price1" name="price" /></td>
+                    <td><input type="text" id="quantity1" name="quantity" /></td>
+                    <td><input type="text" id="totalPrice1" name="totalPrice" disabled /></td>
+                </tr>
+                <tr>
+                    <td><input type="search" id="item2" name="item" class="item-search" />
+                        <ul class="item-search-results" id="itemResults2"></ul>
+                    </td>
+                    <td><input type="text" id="price2" name="price" /></td>
+                    <td><input type="text" id="quantity2" name="quantity" /></td>
+                    <td><input type="text" id="totalPrice2" name="totalPrice" disabled /></td>
+                </tr>
+                <tr>
+                    <td><input type="search" id="item3" name="item" class="item-search" />
+                        <ul class="item-search-results" id="itemResults3"></ul>
+                    </td>
+                    <td><input type="text" id="price3" name="price" /></td>
+                    <td><input type="text" id="quantity3" name="quantity" /></td>
+                    <td><input type="text" id="totalPrice3" name="totalPrice" disabled /></td>
+                </tr>
+                <tr>
+                    <td><input type="search" id="item4" name="item" class="item-search" />
+                        <ul class="item-search-results" id="itemResults4"></ul>
+                    </td>
+                    <td><input type="text" id="price4" name="price" /></td>
+                    <td><input type="text" id="quantity4" name="quantity" /></td>
+                    <td><input type="text" id="totalPrice4" name="totalPrice" disabled /></td>
+                </tr>
+                <tr>
+                    <td><input type="search" id="item5" name="item" class="item-search" />
+                        <ul class="item-search-results" id="itemResults5"></ul>
+                    </td>
+                    <td><input type="text" id="price5" name="price" /></td>
+                    <td><input type="text" id="quantity5" name="quantity" /></td>
+                    <td><input type="text" id="totalPrice5" name="totalPrice" disabled /></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <button id="addRowBtn" >Add Row</button>
+    <div id="totalSumOutput" class="total-sum-output" "></div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/sellinvoice.js"></script>
+</body>
+
+</html>

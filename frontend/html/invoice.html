@@ -7,49 +7,168 @@
     <title>Invoice</title>
     <link rel="stylesheet" href="../assets/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/invoice.css">
-    <style>
-        .loading {
-            display: none;
-            text-align: center;
-            margin-top: 10px;
-        }
-    </style>
 </head>
 
 <body>
 
-    <div class="container">
-        
-        <label for="searchInput">Account Name: </label>
-        <div class="containeri">
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Search...">
-                <ul id="searchResults" class="search-results-container"></ul>
-            </div>
-            <div class="loading" id="loadingSpinner">Loading...</div>
-        </div>
+    <h2>Invoices Data:</h2>
 
-        <!-- Currency Options Box -->
-        <div class="currency-container">
-            <label for="currencySelect">Select Currency: </label>
-            <select id="currencySelect">
-                <option value="NIS">NIS</option>
-                <option value="JOD">JOD</option>
-                <option value="USD">USD</option>
-                <option value="EUR">EUR</option>
-            </select>
+    <div id="cardContainer"></div>
+
+    <!-- Modal for detailed view -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <p id="modalContent"></p>
         </div>
     </div>
-
-    <div id="tableContainer">
-        <!-- Table with 4 columns will be displayed here -->
-    </div>
-
-    <button id="addRowBtn" style="display: none;">Add Row</button>
-    <div id="totalSumOutput" class="total-sum-output" style="display: none;"></div>
 
     <script src="../js/main.js"></script>
-    <script src="../js/invoice.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', fetchData);
+
+        async function fetchData() {
+            const apiUrl = `${baseUrl}invoice.php`;
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                // Group data by invoiceid
+                const groupedData = groupBy(data, 'invoiceid');
+
+                // Call function to display grouped data in cards
+                displayData(groupedData);
+                console.log(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        // Function to group array elements by a specified key
+        function groupBy(array, key) {
+            return array.reduce((result, currentValue) => {
+                (result[currentValue[key]] = result[currentValue[key]] || []).push(currentValue);
+                return result;
+            }, {});
+        }
+
+        function displayData(groupedData) {
+            var cardContainer = document.getElementById('cardContainer');
+
+            // Clear existing cards
+            cardContainer.innerHTML = '';
+
+            // Iterate over grouped data and create cards
+            for (const invoiceId in groupedData) {
+                if (groupedData.hasOwnProperty(invoiceId)) {
+                    var card = document.createElement('div');
+                    card.className = 'card';
+
+                    // Use the first row's data for the card content
+                    const rowData = groupedData[invoiceId][0];
+
+                    // Populate card content with data
+                    card.innerHTML = `
+                  <p>Invoice ID: ${rowData.invoiceid}</p>
+                  <p>Account Name: ${rowData.accountstring}</p>
+                `;
+
+                    // Add click event to open detailed view
+                    card.addEventListener('click', function () {
+                        openModal(groupedData[invoiceId]);
+                    });
+
+                    // Append the card to the container
+                    cardContainer.appendChild(card);
+                }
+            }
+        }
+
+        // Function to open modal with detailed view
+        function openModal(rowsData) {
+            var modal = document.getElementById('myModal');
+            var modalContent = document.getElementById('modalContent');
+
+            // Clear existing content
+            modalContent.innerHTML = '';
+
+            // Create a table for the original data with title
+            var table1 = document.createElement('table');
+            table1.className = 'modal-table';
+
+            // Create caption for additional styling
+            var caption1 = document.createElement('caption');
+            caption1.textContent = 'General Info for Invoice ID: ' + rowsData[0]['invoiceid'];
+            caption1.style.marginBottom = "20px";
+            table1.appendChild(caption1);
+
+            // Create header row
+            var headerRow1 = table1.createTHead().insertRow();
+            var headers1 = ['Invoice ID', 'Account String', 'Invoice Type', 'Total Value'];
+
+            headers1.forEach((headerText, index) => {
+                var headerCell = headerRow1.insertCell(index);
+                headerCell.textContent = headerText;
+            });
+
+            // Use the first row's data for the first table
+            const rowData1 = rowsData[0];
+            var valuesRow1 = table1.insertRow();
+            valuesRow1.insertCell(0).textContent = rowData1['invoiceid'];
+            valuesRow1.insertCell(1).textContent = rowData1['accountstring'];
+            valuesRow1.insertCell(2).textContent = rowData1['invoicetype'];
+            valuesRow1.insertCell(3).textContent = rowData1['totvalue'];
+
+            // Create a line break between the tables
+            modalContent.appendChild(document.createElement('br'));
+
+            // Create a table for additional data with title
+            var table2 = document.createElement('table');
+            table2.className = 'modal-table';
+
+            // Create caption for additional styling
+            var caption2 = document.createElement('caption');
+            caption2.textContent = 'Details Info for Invoice ID: ' + rowsData[0]['invoiceid'];
+            caption2.style.marginBottom = "20px";
+            table2.appendChild(caption2);
+
+            var headerRow2 = table2.createTHead().insertRow();
+            var headers2 = ['Item String', 'Quantity', 'Price'];
+
+            headers2.forEach((headerText, index) => {
+                var headerCell = headerRow2.insertCell(index);
+                headerCell.textContent = headerText;
+            });
+
+            // Populate the second table with data from all rows
+            rowsData.forEach(rowData => {
+                var valuesRow2 = table2.insertRow();
+                valuesRow2.insertCell(0).textContent = rowData['itemstring'];
+                valuesRow2.insertCell(1).textContent = rowData['quantity'];
+                valuesRow2.insertCell(2).textContent = rowData['price'];
+            });
+
+            // Append both tables to modal content
+            modalContent.appendChild(table1);
+            // Add a horizontal line between the tables
+            var hr = document.createElement('hr');
+            hr.style.marginBottom = "20px";
+            modalContent.appendChild(hr);
+            modalContent.appendChild(table2);
+
+            modal.style.display = 'flex';
+        }
+
+        // Function to close modal
+        function closeModal() {
+            var modal = document.getElementById('myModal');
+            modal.style.display = 'none';
+        }
+    </script>
+
+
 </body>
 
 </html>

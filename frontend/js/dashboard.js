@@ -193,10 +193,11 @@ function processDashboardData(page) {
         // Add click event to buttons
         button.addEventListener("click", function () {
             if (buttonInfo.stylestring === 'فاتورة بيع') {
+                console.log("Redirecting to sellinvoice.html");
+                window.location.href = "sellinvoice.html";
+            } else if (buttonInfo.stylestring === 'الفواتير') {
                 console.log("Redirecting to invoice.html");
                 window.location.href = "invoice.html";
-            } else {
-                // Handle other button clicks
             }
         });
     });

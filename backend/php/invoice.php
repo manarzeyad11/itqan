@@ -8,37 +8,27 @@ header("Content-Type: application/json");
 // Include the connection file
 include '../connection.php';
 
-// Check if the required parameter is provided
-if (isset($_GET["customername"])) {
-    // Get the customer name from the query parameters
-    $customerName = $_GET["customername"];
+// SQL query to join invoices_copy, accounts, and invoicesdet_copy tables
+$sql = "SELECT invoices_copy.*, accounts.accountstring, invoicesdet_copy.*, items.itemstring  
+        FROM invoices_copy
+        LEFT JOIN accounts ON invoices_copy.theaccountid = accounts.accountid
+        LEFT JOIN invoicesdet_copy ON invoices_copy.invoiceid = invoicesdet_copy.theinvoiceid
+        LEFT JOIN items ON invoicesdet_copy.theitemid = items.itemid";
 
-    // echo ($customerName);
 
-    // To prevent from SQL injection
-    $customerName = stripcslashes($customerName);
-    $customerName = mysqli_real_escape_string($itqan_con, $customerName);
+$result = mysqli_query($itqan_con, $sql);
 
-    // SQL query to search for the customer in the accounts table
-    $sql = "SELECT accountstring FROM accounts WHERE accountstring LIKE '%$customerName%'";
-    
-    $result = mysqli_query($itqan_con, $sql);
-
-    if ($result) {
-        $rows = array();
-        while ($row = mysqli_fetch_assoc($result)) {
-            $rows[] = $row;
-        }
-
-        // Return the results as JSON
-        echo json_encode($rows);
-    } else {
-        // Handle the case when the query fails
-        echo json_encode(["error" => "Failed to execute the query"]);
+if ($result) {
+    $rows = array();
+    while ($row = mysqli_fetch_assoc($result)) {
+        $rows[] = $row;
     }
+
+    // Return the results as JSON
+    echo json_encode($rows);
 } else {
-    // Handle the case when the required parameter is missing
-    echo json_encode(["error" => "Missing parameters in the URL"]);
+    // Handle the case when the query fails
+    echo json_encode(["error" => "Failed to execute the query"]);
 }
 
 ?>
